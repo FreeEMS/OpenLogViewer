@@ -50,7 +50,7 @@ public enum InitialLineColoring {
 	private final Color bookEndRed = Color.getHSBColor(ALMOST_ONE, 1.0F, 1.0F);
 
 	private InitialLineColoring() {
-		colorList = new LinkedList<Color>();
+		colorList = new LinkedList<>();
 		colorList.add(0, bookEndRed); // Seed with high value red
 	}
 
