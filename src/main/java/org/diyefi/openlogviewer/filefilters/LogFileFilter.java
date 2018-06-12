@@ -22,26 +22,26 @@
  */
 package org.diyefi.openlogviewer.filefilters;
 
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
-
 import org.diyefi.openlogviewer.FileExtensions;
 import org.diyefi.openlogviewer.utils.Utilities;
 
+import javax.swing.filechooser.FileFilter;
+import java.io.File;
+
 public class LogFileFilter extends FileFilter {
-	@Override
-	public final String getDescription() {
-		return FileExtensions.STAR_DOT + FileExtensions.LOG;
-	}
+   @Override
+   public final String getDescription() {
+      return FileExtensions.STAR_DOT.getExtension() + FileExtensions.LOG.getExtension();
+   }
 
-	@Override
-	public final boolean accept(final File file) {
-		if (file.isDirectory()) {
-			return true;
-		}
+   @Override
+   public final boolean accept(final File file) {
+      if (file.isDirectory()) {
+         return true;
+      }
 
-		final String extension = Utilities.getExtension(file);
+      final String extension = Utilities.getExtension(file);
 
-		return FileExtensions.LOG.equals(extension);
-	}
+      return FileExtensions.LOG.getExtension().equals(extension);
+   }
 }
