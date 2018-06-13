@@ -22,8 +22,7 @@ or get the latest development version from the [build server!](http://builds.fre
 
 #### Running a precompiled version
 
-For using the precompiled application you only need a Java Runtime Environment
-(JRE) version 6 or above.
+For using the precompiled application you only need a Java Runtime Environment (JRE) version 8 or above.
 
 #### Building the latest from source
 
