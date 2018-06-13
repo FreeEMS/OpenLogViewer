@@ -1,5 +1,7 @@
 # OpenLogViewer
 
+[![Build Status](https://travis-ci.org/expeditioneer/OpenLogViewer.svg?branch=master)](https://travis-ci.org/expeditioneer/OpenLogViewer)
+
 OpenLogViewer, or OLV for short, is an open source project originally concieved
 by Bryan Harris. He says that he created it due to boredom, but that he intends
 for it to be reasonably easy to use. Ben Fenner, and to a lesser extent, Fred
