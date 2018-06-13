@@ -22,7 +22,10 @@
  */
 package org.diyefi.openlogviewer.genericlog;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
+import org.diyefi.openlogviewer.Keys;
+import org.diyefi.openlogviewer.coloring.InitialLineColoring;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -32,9 +35,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
-
-import org.diyefi.openlogviewer.Keys;
-import org.diyefi.openlogviewer.coloring.InitialLineColoring;
 
 /**
  * GenericDataElement is Comparable Serializable and Transferable and supports property change events
@@ -269,7 +269,7 @@ public final class GenericDataElement implements Comparable<GenericDataElement>,
 		}
 		return displayColor;
 	}
-	public void setDisplayColor(final Color c) {
+	public void setDisplayColor(Color c) {
 		if (c == null) {
 			InitialLineColoring.INSTANCE.giveBackColor(displayColor);
 		}

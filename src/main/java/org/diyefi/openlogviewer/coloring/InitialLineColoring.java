@@ -22,9 +22,11 @@
  */
 package org.diyefi.openlogviewer.coloring;
 
-import java.awt.Color;
-import java.util.List;
+import com.sun.javafx.util.Utils;
+import javafx.scene.paint.Color;
+
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 /**
@@ -47,7 +49,7 @@ public enum InitialLineColoring {
 	private static final float TWO_THIRDS = 2F / THREE;
 
 	private final List<Color> colorList;
-	private final Color bookEndRed = Color.getHSBColor(ALMOST_ONE, 1.0F, 1.0F);
+	private final Color bookEndRed = Color.hsb(ALMOST_ONE, 1.0F, 1.0F);
 
 	private InitialLineColoring() {
 		colorList = new LinkedList<>();
@@ -58,9 +60,9 @@ public enum InitialLineColoring {
 		Color newColor;
 		int index = 0;
 
-		final Color seedRed = Color.getHSBColor(0.0F, 1.0F, 1.0F);
-		final Color seedGreen = Color.getHSBColor(ONE_THIRD, 1.0F, 1.0F);
-		final Color seedBlue = Color.getHSBColor(TWO_THIRDS, 1.0F, 1.0F);
+		final Color seedRed = Color.hsb(0.0F, 1.0F, 1.0F);
+		final Color seedGreen = Color.hsb(ONE_THIRD, 1.0F, 1.0F);
+		final Color seedBlue = Color.hsb(TWO_THIRDS, 1.0F, 1.0F);
 		if (!colorList.contains(seedRed)) { // Seed with low value red
 			newColor = seedRed;
 			index = 0;
@@ -72,8 +74,8 @@ public enum InitialLineColoring {
 			index = 2;
 		} else {
 
-			float hue = 0.0F;
-			float maxDistance = 0.0F;
+			double hue = 0.0;
+			double maxDistance = 0.0;
 			final ListIterator<Color> i = colorList.listIterator();
 			Color c2;
 
@@ -86,16 +88,16 @@ public enum InitialLineColoring {
 				} else {
 					c2 = colorList.get(colorList.size() - 1);
 				}
-				final float[] hsbValues1 = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
-				final float[] hsbValues2 = Color.RGBtoHSB(c2.getRed(), c2.getGreen(), c2.getBlue(), null);
-				final float distance = hsbValues2[0] - hsbValues1[0];
+				final double[] hsbValues1 = Utils.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue());
+				final double[] hsbValues2 = Utils.RGBtoHSB(c2.getRed(), c2.getGreen(), c2.getBlue());
+				final double distance = hsbValues2[0] - hsbValues1[0];
 				if (distance > maxDistance) {
 					maxDistance = distance;
 					index = colorList.indexOf(c2);
 					hue = hsbValues1[0] + (distance / 2.0F);
 				}
 			}
-			newColor = Color.getHSBColor(hue, 1.0F, 1.0F);
+			newColor = Color.hsb(hue, 1.0F, 1.0F);
 		}
 		colorList.add(index, newColor);
 		return newColor;

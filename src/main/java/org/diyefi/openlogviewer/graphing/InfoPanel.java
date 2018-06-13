@@ -22,23 +22,18 @@
  */
 package org.diyefi.openlogviewer.graphing;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import org.diyefi.openlogviewer.OpenLogViewer;
+import org.diyefi.openlogviewer.Text;
+import org.diyefi.openlogviewer.genericlog.GenericLog;
+import org.diyefi.openlogviewer.utils.JavaFXUtils;
+import org.diyefi.openlogviewer.utils.MathUtils;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ResourceBundle;
-
-import javax.swing.JPanel;
-
-import org.diyefi.openlogviewer.OpenLogViewer;
-import org.diyefi.openlogviewer.Text;
-import org.diyefi.openlogviewer.genericlog.GenericLog;
-import org.diyefi.openlogviewer.utils.MathUtils;
 
 public class InfoPanel extends JPanel implements MouseMotionListener, MouseListener {
 	private static final long serialVersionUID = 1L;
@@ -115,7 +110,7 @@ public class InfoPanel extends JPanel implements MouseMotionListener, MouseListe
 									yMouseCoord + 2 + (fontHeight * i),
 									stringWidth + 4,
 									fontHeight);
-							g2d.setColor(singleGraph.getColor());
+							g2d.setColor(JavaFXUtils.convertFXColorToAWTColor(singleGraph.getColor()));
 							g2d.drawString(mouseData,
 									snappedDataPosition + INFO_DISPLAY_OFFSET,
 									yMouseCoord + fontHeight + (fontHeight * i));

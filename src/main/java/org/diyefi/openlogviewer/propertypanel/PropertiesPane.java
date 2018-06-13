@@ -22,45 +22,22 @@
  */
 package org.diyefi.openlogviewer.propertypanel;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
+import javafx.scene.paint.Color;
 import org.apache.commons.lang3.StringUtils;
 import org.diyefi.openlogviewer.Keys;
 import org.diyefi.openlogviewer.OpenLogViewer;
 import org.diyefi.openlogviewer.Text;
+import org.diyefi.openlogviewer.utils.JavaFXUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 
 public class PropertiesPane extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -218,7 +195,8 @@ public class PropertiesPane extends JFrame {
 				sp.setColor(new Color(
 						Integer.parseInt(prop[0]),
 						Integer.parseInt(prop[1]),
-						Integer.parseInt(prop[2])));
+						Integer.parseInt(prop[2]),
+						1));
 				sp.setMin(Double.parseDouble(prop[3]));
 				sp.setMax(Double.parseDouble(prop[4]));
 				sp.setTrackIndex(Integer.parseInt(prop[5]));
@@ -363,7 +341,7 @@ public class PropertiesPane extends JFrame {
 			maxBox.setPreferredSize(new Dimension(50, 20));
 			maxBox.setText(Double.toString(sp.getMax()));
 			colorBox = new JPanel();
-			colorBox.setBackground(sp.getColor());
+			colorBox.setBackground(JavaFXUtils.convertFXColorToAWTColor(sp.getColor()));
 			colorBox.setPreferredSize(new Dimension(30, 20));
 			final String[] tf = {labels.getString(Text.TRUE), labels.getString(Text.FALSE)};
 			activeBox = new JComboBox(tf);
@@ -379,9 +357,7 @@ public class PropertiesPane extends JFrame {
 
 				@Override
 				public void mouseReleased(final MouseEvent e) {
-					final Color newColor = JColorChooser.showDialog(
-							OpenLogViewer.getInstance().getOptionFrame(),
-							labels.getString(Text.CHOOSE_NEW_COLOR), colorBox.getBackground());
+					final java.awt.Color newColor = JColorChooser.showDialog(OpenLogViewer.getInstance().getOptionFrame(), labels.getString(Text.CHOOSE_NEW_COLOR), colorBox.getBackground());
 					if (newColor != null) {
 						colorBox.setBackground(newColor);
 					}
@@ -432,7 +408,7 @@ public class PropertiesPane extends JFrame {
 		public void updateSP() {
 			sp.setMin(Double.parseDouble(minBox.getText()));
 			sp.setMax(Double.parseDouble(maxBox.getText()));
-			sp.setColor(colorBox.getBackground());
+			sp.setColor(JavaFXUtils.convertAWTColorToFXColor(colorBox.getBackground()));
 			sp.setTrackIndex(Integer.parseInt(trackBox.getText()));
 			final String active = (String) activeBox.getSelectedItem();
 			sp.setActive(Boolean.parseBoolean(active));
@@ -441,7 +417,7 @@ public class PropertiesPane extends JFrame {
 		public void reset() {
 			minBox.setText(Double.toString(sp.getMin()));
 			maxBox.setText(Double.toString(sp.getMax()));
-			colorBox.setBackground(sp.getColor());
+			colorBox.setBackground(JavaFXUtils.convertFXColorToAWTColor(sp.getColor()));
 			trackBox.setText(Integer.toString(sp.getTrackIndex()));
 			activeBox.setSelectedItem(Boolean.toString(sp.isActive()));
 		}
