@@ -96,11 +96,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <project.initial.heap>-Xms128m</project.initial.heap>
+        <project.initial.heap>-Xms1024m</project.initial.heap>
         <project.maximum.heap>-Xmx1024m</project.maximum.heap>
 
         <project.forum.url>http://forum.diyefi.org/viewforum.php?f=32</project.forum.url>
         <project.issues.url>http://issues.freeems.org</project.issues.url>
+
+        <log4j.version>2.11.0</log4j.version>
 
         <junit.platform.version>1.2.0</junit.platform.version>
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
@@ -368,22 +370,26 @@
     </build>
 
     <dependencies>
-        <!-- Dirty hack to help the noobs. Dependency verification occurs before validate phase plugins run. -->
-        <!-- No longer resolves OK with 3.3.9, I guess the version is unacceptable, and I CBF putting a new dodgy dep into the repo, so the check can go bye bye... <dependency>
-            <groupId>org.diyefi.test.YouRequireSettingsXmlInYourHomeM2Directory</groupId>
-            <artifactId>Please.Install.settings.xml.From.The.Project.Directory</artifactId>
-            <version>Artifacts.Are.Required.From.The.Repository.That.It.Points.At</version>
-            <scope>test</scope>
-        </dependency>-->
-
         <!-- Runtime dependencies -->
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
         </dependency>
 
-        <!-- DIYEFI.org repo dependencies. The following dependencies requires the included settings.xml file be installed -->
 
         <!-- To allow the app to compile with Mac behaviour on non-Mac machines -->
         <dependency>

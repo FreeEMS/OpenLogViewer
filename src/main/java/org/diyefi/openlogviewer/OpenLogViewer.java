@@ -28,6 +28,8 @@
  */
 package org.diyefi.openlogviewer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.diyefi.openlogviewer.decoder.AbstractDecoder;
 import org.diyefi.openlogviewer.decoder.CSVTypeLog;
 import org.diyefi.openlogviewer.decoder.FreeEMSBin;
@@ -46,7 +48,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,9 +57,11 @@ import java.util.*;
 import java.util.List;
 
 public final class OpenLogViewer extends JFrame {
-   public static final String NEWLINE = System.getProperty(Keys.LINE_SEPARATOR);
-
    private static final long serialVersionUID = 1L;
+
+   private static final Logger LOG = LogManager.getLogger(OpenLogViewer.class);
+
+   public static final String NEWLINE = System.getProperty(Keys.LINE_SEPARATOR);
 
    private static final Properties buildInfo = new Properties();
 
@@ -107,11 +110,11 @@ public final class OpenLogViewer extends JFrame {
       try {
          buildInfo.loadFromXML(getClass().getClassLoader().getResourceAsStream("build/buildInfo.xml"));
       } catch (IOException e) {
-         System.out.println("Uh oh, looks like a hacked copy! UNSUPPORTED VERSION! DO NOT USE!");
+         LOG.error("Uh oh, looks like a hacked copy! UNSUPPORTED VERSION! DO NOT USE!");
       } finally {
          String preliminaryVersion = buildInfo.getProperty(GIT_DESCRIBE_KEY);
          if (preliminaryVersion == null || "".equals(preliminaryVersion.trim())) {
-            System.out.println("Application version not found! UNSUPPORTED VERSION! DO NOT USE!");
+            LOG.error("Application version not found! UNSUPPORTED VERSION! DO NOT USE!");
             applicationVersion = "UNSUPPORTED VERSION! DO NOT USE!";
             buildInfo.setProperty(GIT_DESCRIBE_KEY, applicationVersion);
          } else {
@@ -124,7 +127,7 @@ public final class OpenLogViewer extends JFrame {
       buildInfo.setProperty("application.title", applicationTitle);
 
       prefFrame = new PropertiesPane(labels, SETTINGS_DIRECTORY);
-      properties = new ArrayList<SingleProperty>();
+      properties = new ArrayList<>();
       prefFrame.setProperties(properties);
 
       footerPanel = new FooterPanel(labels);
@@ -145,66 +148,31 @@ public final class OpenLogViewer extends JFrame {
 
       final JMenuItem openFileMenuItem = new JMenuItem(labels.getString(Text.FILE_MENU_ITEM_OPEN_NAME));
       openFileMenuItem.setName(Text.FILE_MENU_ITEM_OPEN_NAME);
-      openFileMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            openChosenFile();
-         }
-      });
+      openFileMenuItem.addActionListener(e -> openChosenFile());
 
       final JMenuItem reloadFileMenuItem = new JMenuItem(labels.getString(Text.FILE_MENU_ITEM_RELOAD_NAME));
       reloadFileMenuItem.setName(Text.FILE_MENU_ITEM_RELOAD_NAME);
-      reloadFileMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            openLastFile();
-         }
-      });
+      reloadFileMenuItem.addActionListener(e -> openLastFile());
 
       final JMenuItem quitFileMenuItem = new JMenuItem(labels.getString(Text.FILE_MENU_ITEM_QUIT_NAME));
       quitFileMenuItem.setName(Text.FILE_MENU_ITEM_QUIT_NAME);
-      quitFileMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            OpenLogViewer.getInstance().quit();
-         }
-      });
+      quitFileMenuItem.addActionListener(e -> OpenLogViewer.getInstance().quit());
 
       final JMenuItem fullScreenViewMenuItem = new JMenuItem(labels.getString(Text.VIEW_MENU_ITEM_FULL_SCREEN_NAME));
       fullScreenViewMenuItem.setName(Text.VIEW_MENU_ITEM_FULL_SCREEN_NAME);
-      fullScreenViewMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            enterFullScreen();
-         }
-      });
+      fullScreenViewMenuItem.addActionListener(e -> enterFullScreen());
 
       final JMenuItem scaleAndColorViewMenuItem = new JMenuItem(labels.getString(Text.VIEW_MENU_ITEM_SCALE_AND_COLOR_NAME));
       scaleAndColorViewMenuItem.setName(Text.VIEW_MENU_ITEM_SCALE_AND_COLOR_NAME);
-      scaleAndColorViewMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            prefFrame.setVisible(true);
-         }
-      });
+      scaleAndColorViewMenuItem.addActionListener(e -> prefFrame.setVisible(true));
 
       final JMenuItem fieldsAndDivisionsViewMenuItem = new JMenuItem(labels.getString(Text.VIEW_MENU_ITEM_FIELDS_AND_DIVISIONS_NAME));
       fieldsAndDivisionsViewMenuItem.setName(Text.VIEW_MENU_ITEM_FIELDS_AND_DIVISIONS_NAME);
-      fieldsAndDivisionsViewMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            optionFrame.setVisible(true);
-         }
-      });
+      fieldsAndDivisionsViewMenuItem.addActionListener(e -> optionFrame.setVisible(true));
 
       final JMenuItem aboutMenuItem = new JMenuItem(labels.getString(Text.HELP_MENU_ITEM_ABOUT_NAME));
       aboutMenuItem.setName(Text.HELP_MENU_ITEM_ABOUT_NAME);
-      aboutMenuItem.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(final ActionEvent e) {
-            AboutFrame.show(buildInfo);
-         }
-      });
+      aboutMenuItem.addActionListener(e -> AboutFrame.show(buildInfo));
 
       /*
        * 13 January 2012 Had Chick-fil-A #1 meal with no pickle and Dr Pepper for lunch.
@@ -263,59 +231,51 @@ public final class OpenLogViewer extends JFrame {
     * @param args the command line arguments
     */
    public static void main(final String[] args) {
-      EventQueue.invokeLater(new Runnable() {
+      EventQueue.invokeLater(() -> {
+         final Locale currentLocale = Locale.getDefault();
 
-         @Override
-         public void run() {
-            final Locale currentLocale = Locale.getDefault();
+         labels = ResourceBundle.getBundle(OpenLogViewer.class.getPackage().getName() + ".Labels", currentLocale);
 
-            labels = ResourceBundle.getBundle(OpenLogViewer.class.getPackage().getName() + ".Labels", currentLocale);
+         final String lookAndFeel;
+         final String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+         if (IS_MAC_OS_X) {
+            System.setProperty(Keys.APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+         }
+         lookAndFeel = systemLookAndFeel;
 
-            final String lookAndFeel;
-            final String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-            if (IS_MAC_OS_X) {
-               System.setProperty(Keys.APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
-            }
-            lookAndFeel = systemLookAndFeel;
+         try {
+            UIManager.setLookAndFeel(lookAndFeel);
+         } catch (UnsupportedLookAndFeelException e) {
+            LOG.error(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_ONE), e);
+         } catch (ClassNotFoundException e) {
+            LOG.error(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_TWO), e);
+         } catch (InstantiationException e) {
+            LOG.error(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_THREE), e);
+         } catch (IllegalAccessException e) {
+            LOG.error(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_FOUR), e);
+         }
 
-            try {
-               UIManager.setLookAndFeel(lookAndFeel);
-            } catch (UnsupportedLookAndFeelException e) {
-               e.printStackTrace();
-               System.out.println(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_ONE));
-            } catch (ClassNotFoundException e) {
-               e.printStackTrace();
-               System.out.println(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_TWO));
-            } catch (InstantiationException e) {
-               e.printStackTrace();
-               System.out.println(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_THREE));
-            } catch (IllegalAccessException e) {
-               e.printStackTrace();
-               System.out.println(labels.getString(Text.LOOK_AND_FEEL_EXCEPTION_MESSAGE_FOUR));
-            }
+         mainAppRef = new OpenLogViewer();
 
-            mainAppRef = new OpenLogViewer();
-
-            if (args.length > 0) {
-               final File toOpen = new File(args[0]).getAbsoluteFile();
-               if (toOpen.exists() && toOpen.isFile()) {
-                  if (args.length > 1) {
-                     System.out.println(args.length + labels.getString(Text.TOO_MANY_ARGUMENTS) + args[0]);
-                  } else {
-                     System.out.println(labels.getString(Text.ATTEMPTING_TO_OPEN_FILE) + args[0]);
-                  }
-                  final FileFilter ms = new MSTypeFileFilter(labels);
-                  final FileFilter fe = new FreeEMSFileFilter(labels);
-                  if (fe.accept(toOpen) || ms.accept(toOpen)) {
-                     mainAppRef.openFile(toOpen, mainAppRef.generateChooser());
-                  } else {
-                     System.out.println(labels.getString(Text.FILE_TYPE_NOT_SUPPORTED) + args[0]);
-                     mainAppRef.quit();
-                  }
+         if (args.length > 0) {
+            final File toOpen = new File(args[0]).getAbsoluteFile();
+            if (toOpen.exists() && toOpen.isFile()) {
+               if (args.length > 1) {
+                  LOG.error(args.length + labels.getString(Text.TOO_MANY_ARGUMENTS) + args[0]);
                } else {
-                  System.out.println(labels.getString(Text.FILE_ARGUMENT_NOT_GOOD) + args[0]);
+                  LOG.error(labels.getString(Text.ATTEMPTING_TO_OPEN_FILE) + args[0]);
+               }
+               final FileFilter ms = new MSTypeFileFilter(labels);
+               final FileFilter fe = new FreeEMSFileFilter(labels);
+               if (fe.accept(toOpen) || ms.accept(toOpen)) {
+                  mainAppRef.openFile(toOpen, mainAppRef.generateChooser());
+               } else {
+                  LOG.error(labels.getString(Text.FILE_TYPE_NOT_SUPPORTED) + args[0]);
                   mainAppRef.quit();
                }
+            } else {
+               LOG.error(labels.getString(Text.FILE_ARGUMENT_NOT_GOOD) + args[0]);
+               mainAppRef.quit();
             }
          }
       });
@@ -455,11 +415,11 @@ public final class OpenLogViewer extends JFrame {
          try {
             final FileFilter[] existingFilters = fileChooser.getChoosableFileFilters();
             boolean alreadyHasSavedFilter = false;
-            for (int i = 0; i < existingFilters.length; i++) {
-               final String thisFilter = existingFilters[i].getClass().getCanonicalName();
+            for (FileFilter existingFilter : existingFilters) {
+               final String thisFilter = existingFilter.getClass().getCanonicalName();
                if (thisFilter.equals(chooserClass)) {
                   alreadyHasSavedFilter = true;
-                  fileChooser.setFileFilter(existingFilters[i]); // If set to a new instance the list will contain two!
+                  fileChooser.setFileFilter(existingFilter); // If set to a new instance the list will contain two!
                }
             }
 
@@ -470,13 +430,13 @@ public final class OpenLogViewer extends JFrame {
             }
          } catch (ClassNotFoundException c) {
             removeApplicationWideProperty(NAME_OF_LAST_CHOOSER_CLASS);
-            System.out.println(labels.getString(Text.CLASS_NOT_FOUND) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
+            LOG.error(labels.getString(Text.CLASS_NOT_FOUND) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
          } catch (InstantiationException i) {
             removeApplicationWideProperty(NAME_OF_LAST_CHOOSER_CLASS);
-            System.out.println(labels.getString(Text.COULD_NOT_INSTANTIATE_CLASS) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
+            LOG.error(labels.getString(Text.COULD_NOT_INSTANTIATE_CLASS) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
          } catch (IllegalAccessException l) {
             removeApplicationWideProperty(NAME_OF_LAST_CHOOSER_CLASS);
-            System.out.println(labels.getString(Text.COULD_NOT_ACCESS_CLASS) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
+            LOG.error(labels.getString(Text.COULD_NOT_ACCESS_CLASS) + NAME_OF_LAST_CHOOSER_CLASS + labels.getString(Text.REMOVED_FROM_PROPS));
          }
       }
       return fileChooser;
@@ -497,15 +457,15 @@ public final class OpenLogViewer extends JFrame {
          fos = new FileOutputStream(appWideFile);
          appWide.store(fos, "saved");
       } catch (IOException e) {
-         e.printStackTrace();
+         LOG.error(e);
          throw new RuntimeException(labels.getString(Text.IO_ISSUE_SAVING_PROPERTY) + e.getMessage(), e);
       } finally {
          try {
             if (fos != null) {
                fos.close();
             }
-         } catch (IOException ioe) {
-            ioe.printStackTrace();
+         } catch (IOException e) {
+            LOG.error(e);
          }
       }
    }
@@ -519,15 +479,15 @@ public final class OpenLogViewer extends JFrame {
          fos = new FileOutputStream(appWideFile);
          appWide.store(fos, "removed");
       } catch (IOException e) {
-         e.printStackTrace();
+         LOG.error(e);
          throw new RuntimeException(labels.getString(Text.IO_ISSUE_REMOVING_PROPERTY) + e.getMessage(), e);
       } finally {
          try {
             if (fos != null) {
                fos.close();
             }
-         } catch (IOException ioe) {
-            ioe.printStackTrace();
+         } catch (IOException e) {
+            LOG.error(e);
          }
       }
    }
@@ -537,7 +497,7 @@ public final class OpenLogViewer extends JFrame {
       appWideFile = new File(System.getProperty(Keys.USER_HOME));
 
       if (!appWideFile.exists() || !appWideFile.canRead() || !appWideFile.canWrite()) {
-         System.out.println(labels.getString(Text.HOME_DIRECTORY_NOT_ACCESSIBLE));
+         LOG.error(labels.getString(Text.HOME_DIRECTORY_NOT_ACCESSIBLE));
       } else {
          appWideFile = new File(appWideFile, SETTINGS_DIRECTORY);
       }
@@ -556,14 +516,14 @@ public final class OpenLogViewer extends JFrame {
                // This should be passed up to the GUI as a dialog that tells you it can't do what it has to be able to...
             }
          } catch (IOException e) {
-            System.out.print(e.getMessage());
+            LOG.error(e);
          } finally {
             try {
                if (fis != null) {
                   fis.close();
                }
-            } catch (IOException ioe) {
-               ioe.printStackTrace();
+            } catch (IOException e) {
+               LOG.error(e);
             }
          }
       } else {
@@ -574,15 +534,15 @@ public final class OpenLogViewer extends JFrame {
                fis = new FileInputStream(appWideFile);
                appWide.load(fis);
             }
-         } catch (IOException ioe) {
-            ioe.printStackTrace();
+         } catch (IOException e) {
+            LOG.error(e);
          } finally {
             try {
                if (fis != null) {
                   fis.close();
                }
-            } catch (IOException ioe) {
-               ioe.printStackTrace();
+            } catch (IOException e) {
+               LOG.error(e);
             }
          }
       }
@@ -619,12 +579,12 @@ public final class OpenLogViewer extends JFrame {
                      requestFocusInWindow(); // Put keyboard focus here so toggling fullscreen works
                      graphingPanel.moveGraphDueToResize(); // Done so centering still works on Mac
                   } catch (IllegalComponentStateException e) {
-                     e.printStackTrace();
-                     System.out.println(labels.getString(Text.FAILED_TO_GO_FULLSCREEN_MESSAGE));
+                     LOG.error(e);
+                     LOG.error(labels.getString(Text.FAILED_TO_GO_FULLSCREEN_MESSAGE));
                      fullscreen = false;
                   }
                } else {
-                  System.out.println(labels.getString(Text.CANT_GO_FULLSCREEN_MESSAGE));
+                  LOG.error(labels.getString(Text.CANT_GO_FULLSCREEN_MESSAGE));
                }
             }
          }
