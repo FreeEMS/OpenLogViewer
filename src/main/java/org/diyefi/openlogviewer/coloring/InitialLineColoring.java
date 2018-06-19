@@ -34,9 +34,10 @@ import java.util.ListIterator;
  * The colors provided should be the most contrasting colors possible.
  * @author Ben Fenner
  */
-public enum InitialLineColoring {
+public class InitialLineColoring {
 
-	INSTANCE;
+	public static final InitialLineColoring INSTANCE = new InitialLineColoring();
+
 	// ALMOST_ONE is used to seed colorList with a red that will stay at the end of
 	// the list. If you create a Color with a hue of 1F then it actually gets
 	// created as a Color with a hue of 0F which is identical to the red at the
