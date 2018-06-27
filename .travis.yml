@@ -5,5 +5,9 @@ jdk:
   - oraclejdk9
   - openjdk8
 
+cache:
+  directories:
+  - ${HOME}/.gradle
 
-script: mvn clean verify
+script:
+  - ./gradlew clean shadow
