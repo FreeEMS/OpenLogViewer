@@ -108,7 +108,8 @@ public final class OpenLogViewer extends JFrame {
 
    public OpenLogViewer() {
       try {
-         buildInfo.loadFromXML(getClass().getClassLoader().getResourceAsStream("build/buildInfo.xml"));
+         buildInfo.load(getClass().getClassLoader().getResourceAsStream("buildInfo.properties"));
+         buildInfo.load(getClass().getClassLoader().getResourceAsStream("git.properties"));
       } catch (IOException e) {
          LOG.error("Uh oh, looks like a hacked copy! UNSUPPORTED VERSION! DO NOT USE!");
       } finally {

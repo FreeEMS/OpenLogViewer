@@ -178,7 +178,7 @@ public final class AboutFrame extends JFrame {
 		final JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 
-		addTextToPanel(southPanel, "Built by " + buildInfo.getProperty("git.build.user.name") + " using <a href='http://maven.apache.org/'>Maven " + buildInfo.getProperty("maven.version") + LINK_CLOSE);
+		addTextToPanel(southPanel, "Built by " + buildInfo.getProperty("git.build.user.name") + " using <a href='https://gradle.org/'>Gradle " + buildInfo.getProperty("gradle.version") + LINK_CLOSE);
 		addTextToPanel(southPanel, "Built on " + buildInfo.getProperty("os.name") + " " + buildInfo.getProperty("os.arch") + " " + buildInfo.getProperty("os.version"));
 		addTextToPanel(southPanel, "Built using Java " + buildInfo.getProperty("java.version") + " on a " + buildInfo.getProperty("java.vm.version") + " VM");
 		addTextToPanel(southPanel, "Build date and time: " + buildInfo.getProperty("git.build.time"));
