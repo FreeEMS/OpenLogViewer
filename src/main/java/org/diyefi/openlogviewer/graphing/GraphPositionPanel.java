@@ -179,7 +179,7 @@ public class GraphPositionPanel extends JPanel {
 
 				String positionDataString;
 				if (majorGraduationSpacing > TENTHS_DISPLAY_THRESHOLD) {
-					final BigDecimal positionData = new BigDecimal(nextPositionMarker);
+					final BigDecimal positionData = BigDecimal.valueOf(nextPositionMarker);
 					positionDataString = positionData.toPlainString();
 				} else if (majorGraduationSpacing > HUNDRETHS_DISPLAY_THRESHOLD) {
 					positionDataString = MathUtils.roundDecimalPlaces(nextPositionMarker, 1);

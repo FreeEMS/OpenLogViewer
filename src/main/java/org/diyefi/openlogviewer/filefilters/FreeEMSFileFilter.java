@@ -52,9 +52,9 @@ public class FreeEMSFileFilter extends FileFilter {
 
 		final String extension = Utilities.getExtension(file);
 
-		if (FileExtensions.BIN.equals(extension)) {
+		if (FileExtensions.BIN.equals(FileExtensions.getByExtension(extension))) {
 			return true;
-		} else if (FileExtensions.LA.equals(extension)) {
+		} else if (FileExtensions.LA.equals(FileExtensions.getByExtension(extension))) {
 			return true;
 		}
 

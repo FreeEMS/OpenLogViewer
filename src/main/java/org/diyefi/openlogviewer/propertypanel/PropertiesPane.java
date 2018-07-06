@@ -208,25 +208,24 @@ public class PropertiesPane extends JFrame {
 
 	private void loadProperties() {
 		try {
-			final Scanner scan = new Scanner(new FileReader(OLVProperties));
+			try (Scanner scan = new Scanner(new FileReader(OLVProperties))) {
 
-			while (scan.hasNext()) {
-				final String[] propLine = scan.nextLine().split("=");
-				final SingleProperty sp = new SingleProperty();
-				final String[] prop = propLine[1].split(",");
-				sp.setHeader(propLine[0]);
-				sp.setColor(new Color(
-						Integer.parseInt(prop[0]),
-						Integer.parseInt(prop[1]),
-						Integer.parseInt(prop[2])));
-				sp.setMin(Double.parseDouble(prop[3]));
-				sp.setMax(Double.parseDouble(prop[4]));
-				sp.setTrackIndex(Integer.parseInt(prop[5]));
-				sp.setActive(Boolean.parseBoolean(prop[6]));
-				addProperty(sp);
+				while (scan.hasNext()) {
+					final String[] propLine = scan.nextLine().split("=");
+					final SingleProperty sp = new SingleProperty();
+					final String[] prop = propLine[1].split(",");
+					sp.setHeader(propLine[0]);
+					sp.setColor(new Color(
+							Integer.parseInt(prop[0]),
+							Integer.parseInt(prop[1]),
+							Integer.parseInt(prop[2])));
+					sp.setMin(Double.parseDouble(prop[3]));
+					sp.setMax(Double.parseDouble(prop[4]));
+					sp.setTrackIndex(Integer.parseInt(prop[5]));
+					sp.setActive(Boolean.parseBoolean(prop[6]));
+					addProperty(sp);
+				}
 			}
-
-			scan.close();
 		} catch (FileNotFoundException fnf) {
 			System.out.print(fnf.toString());
 			throw new RuntimeException(fnf);
@@ -237,8 +236,10 @@ public class PropertiesPane extends JFrame {
 		try {
 			removeProperties.clear();
 			updateProperties();
-			final FileWriter fstream = new FileWriter(OLVProperties);
-			final BufferedWriter out = new BufferedWriter(fstream);
+			final BufferedWriter out;
+			try (FileWriter fstream = new FileWriter(OLVProperties)) {
+				out = new BufferedWriter(fstream);
+			}
 
 			for (int i = 0; i < properties.size(); i++) {
 				out.write(properties.get(i).toString());

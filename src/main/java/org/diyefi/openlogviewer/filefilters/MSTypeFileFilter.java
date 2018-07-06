@@ -53,11 +53,11 @@ public class MSTypeFileFilter extends FileFilter {
 
 		if (FileExtensions.LOG.equals(extension)) {
 			return true;
-		} else if (FileExtensions.CSV.equals(extension)) {
+		} else if (FileExtensions.CSV.equals(FileExtensions.getByExtension(extension))) {
 			return true;
-		} else if (FileExtensions.XLS.equals(extension)) {
+		} else if (FileExtensions.XLS.equals(FileExtensions.getByExtension(extension))) {
 			return true;
-		} else if (FileExtensions.MSL.equals(extension)) {
+		} else if (FileExtensions.MSL.equals(FileExtensions.getByExtension(extension))) {
 			return true;
 		}
 

@@ -23,13 +23,13 @@ public enum FileExtensions {
 
    private final String extension;
 
-   private FileExtensions(String extension) {
-      this.extension = extension;
-   }
-
    public static FileExtensions getByExtension(String extension) {
       return Optional.ofNullable(lookupByExtension.get(extension))
             .orElseThrow(() -> new IllegalArgumentException("Unsupported file extension '" + extension + "'"));
+   }
+
+   FileExtensions(String extension) {
+      this.extension = extension;
    }
 
    public String getExtension() {

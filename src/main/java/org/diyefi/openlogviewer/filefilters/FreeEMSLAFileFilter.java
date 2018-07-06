@@ -43,6 +43,6 @@ public class FreeEMSLAFileFilter extends FileFilter {
 
       final String extension = Utilities.getExtension(file);
 
-      return FileExtensions.LA.getExtension().equals(FileExtensions.getByExtension(extension));
+      return FileExtensions.LA.equals(FileExtensions.getByExtension(extension));
    }
 }
