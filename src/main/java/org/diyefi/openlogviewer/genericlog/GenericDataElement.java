@@ -22,10 +22,7 @@
  */
 package org.diyefi.openlogviewer.genericlog;
 
-import javafx.scene.paint.Color;
-import org.diyefi.openlogviewer.Keys;
-import org.diyefi.openlogviewer.coloring.InitialLineColoring;
-
+import java.awt.Color;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -34,7 +31,11 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.IntStream;
+
+import org.diyefi.openlogviewer.Keys;
+import org.diyefi.openlogviewer.coloring.InitialLineColoring;
 
 /**
  * GenericDataElement is Comparable Serializable and Transferable and supports property change events
@@ -172,6 +173,20 @@ public final class GenericDataElement implements Comparable<GenericDataElement>,
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		GenericDataElement that = (GenericDataElement) o;
+		return Objects.equals(name.toLowerCase(), that.name.toLowerCase());
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(name.toLowerCase());
+	}
+
+	@Override
 	public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 		if (flavor.equals(dataFlavor[0])) {
 			return this;
@@ -269,7 +284,7 @@ public final class GenericDataElement implements Comparable<GenericDataElement>,
 		}
 		return displayColor;
 	}
-	public void setDisplayColor(Color c) {
+	public void setDisplayColor(final Color c) {
 		if (c == null) {
 			InitialLineColoring.INSTANCE.giveBackColor(displayColor);
 		}

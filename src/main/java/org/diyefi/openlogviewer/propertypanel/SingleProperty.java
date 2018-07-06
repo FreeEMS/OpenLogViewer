@@ -22,7 +22,7 @@
  */
 package org.diyefi.openlogviewer.propertypanel;
 
-import javafx.scene.paint.Color;
+import java.awt.Color;
 import org.diyefi.openlogviewer.genericlog.GenericDataElement;
 
 public class SingleProperty implements Comparable<SingleProperty> {
