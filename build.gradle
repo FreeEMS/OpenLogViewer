@@ -6,8 +6,10 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'jacoco'
 apply plugin: 'maven'
 apply plugin: 'com.github.johnrengelman.shadow'
+
 
 group = 'org.diyefi.openlogviewer'
 version = '0.0.3-SNAPSHOT'
@@ -47,16 +49,21 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile group: 'com.yuvimasory', name: 'orange-extensions', version: '1.3.0'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.2.0'
-    testCompile group: 'org.junit.platform', name: 'junit-platform-surefire-provider', version: '1.2.0'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
-    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.19.0'
-    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.11.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.11.0'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'com.yuvimasory:orange-extensions:1.3.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.2.0'
+    testImplementation 'org.junit.platform:junit-platform-surefire-provider:1.2.0'
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:2.19.0'
+    testImplementation 'org.assertj:assertj-core:3.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 sonarqube {
@@ -65,3 +72,4 @@ sonarqube {
         property "sonar.projectKey", "org.diyefi.openlogviewer"
     }
 }
+
