@@ -1,0 +1,18 @@
+language: java
+jdk:
+- oraclejdk8
+- oraclejdk9
+- openjdk8
+
+cache:
+  directories:
+  - "${HOME}/.gradle"
+
+addons:
+  sonarcloud:
+    organization: "expeditioneer-github"
+    token:
+      secure: rOEze8AzsNOJ7eFZYOqSji3dXLiVvyTr4NsLCxNNWLtPf3wsnr25L/pzyTZtE01NWOg4njdV55FUJc9TrbMaxG7O2gntP4IAVjS7Co05jM9GF4YWtL5y5ZxxjCjae32aqagjMwyzR3YskSZ0QgG0HW+Sbvlnxc2adK3ORc9i8hOgjj4Z3jneAR1w2yCgqB3MMPvnJtDgLqJG6hixDTLi2SiKnp3dDrJ3nTuKXhasOqSOWskoetMh1W3PkQh4/A/B1e7lq+Dy9sW4KlvVaGnGpyY5u3yR6EEaC0mRXUi6BYJfvxpF1YB1Gl7K7Yy2u+9akPTOSPgyUXMRXfpMO9X0+JxrJ7e8Hs1C1CSIuSt5zo733B+2Ar6DtG1gH0a7gUwANUk1+S3GXOWMQ7ApwEtSgIu7P8JoBOnJ9CMhufQmchpiAvmF7iAqYV2YVhX0lnS8P7J4+qm2kIdfAsOaKWPrALroKP0paGpQaq4Z4nQtGWZ/2wuyIqhgRDk1FDRv9+S64/mEIolYme9XzchilhgDWvaQT1GVnw1pPZqIvSLsI43jihmgQVxfa5VcCRyAKxOMKmHyoqvWsDzg8h6DBOagHjxhvNXLI70p9vxkhdMM/qOqSx3k6L1gnZ8sAce5TyUpeqfh1vFj7H0SovFm5UPxztuC1JWd6V19JUXeqCQV55c=
+
+script:
+  - "./gradlew dependencyUpdates clean test shadow sonarqube"

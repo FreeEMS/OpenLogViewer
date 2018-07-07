@@ -30,6 +30,7 @@ import java.util.ListIterator;
 /**
  * InitialLineColoring is used to provide the coloring for the GenericDataElements.
  * The colors provided should be the most contrasting colors possible.
+ *
  * @author Ben Fenner
  */
 public enum InitialLineColoring {
@@ -50,7 +51,7 @@ public enum InitialLineColoring {
 	private final Color bookEndRed = Color.getHSBColor(ALMOST_ONE, 1.0F, 1.0F);
 
 	private InitialLineColoring() {
-		colorList = new LinkedList<Color>();
+		colorList = new LinkedList<>();
 		colorList.add(0, bookEndRed); // Seed with high value red
 	}
 

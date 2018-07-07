@@ -31,6 +31,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 import org.diyefi.openlogviewer.Keys;
 import org.diyefi.openlogviewer.coloring.InitialLineColoring;
@@ -171,6 +173,20 @@ public final class GenericDataElement implements Comparable<GenericDataElement>,
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		GenericDataElement that = (GenericDataElement) o;
+		return Objects.equals(name.toLowerCase(), that.name.toLowerCase());
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(name.toLowerCase());
+	}
+
+	@Override
 	public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 		if (flavor.equals(dataFlavor[0])) {
 			return this;
@@ -190,12 +206,8 @@ public final class GenericDataElement implements Comparable<GenericDataElement>,
 
 	@Override
 	public boolean isDataFlavorSupported(final DataFlavor flavor) {
-		for (int i = 0; i < dataFlavor.length; i++) {
-			if (flavor.equals(dataFlavor[i])) {
-				return true;
-			}
-		}
-		return false;
+		return IntStream.range(0, dataFlavor.length)
+				.anyMatch(i -> flavor.equals(dataFlavor[i]));
 	}
 
 	/**

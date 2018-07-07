@@ -81,34 +81,35 @@ public class CSVTypeLog extends AbstractDecoder {
 	 * @throws IOException
 	 */
 	protected final void decodeLog() throws IOException {
-		final Scanner scan = new Scanner(new BufferedReader(new FileReader(getLogFile())));
-		final String delimiter = scanForDelimiter();
+		try (Scanner scan = new Scanner(new BufferedReader(new FileReader(getLogFile())))) {
+			final String delimiter = scanForDelimiter();
 
-		String[] splitLine;
-		String[] headers = new String[1];
+			String[] splitLine;
+			String[] headers = new String[1];
 
-		int finalAndInitialLength = Utilities.countBytes(getLogFile(), (byte) '\n');
+			int finalAndInitialLength = Utilities.countBytes(getLogFile(), (byte) '\n');
 
-		String line = "";
-		boolean headerSet = false;
-		while (scan.hasNextLine() && !headerSet) {
-			line = scan.nextLine();
-			splitLine = line.split(delimiter);
+			String line = "";
+			boolean headerSet = false;
+			while (scan.hasNextLine() && !headerSet) {
+				line = scan.nextLine();
+				splitLine = line.split(delimiter);
 
-			if (splitLine.length == fieldCount) {
-				headers = splitLine;
-				this.setDecodedLog(new GenericLog(splitLine, finalAndInitialLength, LOAD_FACTOR, labels));
-				headerSet = true;
+				if (splitLine.length == fieldCount) {
+					headers = splitLine;
+					this.setDecodedLog(new GenericLog(splitLine, finalAndInitialLength, LOAD_FACTOR, labels));
+					headerSet = true;
+				}
 			}
-		}
 
-		while (scan.hasNextLine()) {
-			line = scan.nextLine();
-			splitLine = line.split(delimiter);
-			this.getDecodedLog().incrementPosition();
-			if (splitLine.length == fieldCount) {
-				for (int x = 0; x < splitLine.length; x++) {
-					this.getDecodedLog().addValue(headers[x], Double.parseDouble(splitLine[x]));
+			while (scan.hasNextLine()) {
+				line = scan.nextLine();
+				splitLine = line.split(delimiter);
+				this.getDecodedLog().incrementPosition();
+				if (splitLine.length == fieldCount) {
+					for (int x = 0; x < splitLine.length; x++) {
+						this.getDecodedLog().addValue(headers[x], Double.parseDouble(splitLine[x]));
+					}
 				}
 			}
 		}

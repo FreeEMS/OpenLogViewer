@@ -1,5 +1,10 @@
 # OpenLogViewer
 
+[![Build Status](https://travis-ci.org/expeditioneer/OpenLogViewer.svg?branch=master)](https://travis-ci.org/expeditioneer/OpenLogViewer)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.diyefi.openlogviewer&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.diyefi.openlogviewer)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=org.diyefi.openlogviewer&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.diyefi.openlogviewer)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=org.diyefi.openlogviewer&metric=bugs)](https://sonarcloud.io/dashboard?id=org.diyefi.openlogviewer)
+
 OpenLogViewer, or OLV for short, is an open source project originally concieved
 by Bryan Harris. He says that he created it due to boredom, but that he intends
 for it to be reasonably easy to use. Ben Fenner, and to a lesser extent, Fred
@@ -20,8 +25,7 @@ or get the latest development version from the [build server!](http://builds.fre
 
 #### Running a precompiled version
 
-For using the precompiled application you only need a Java Runtime Environment
-(JRE) version 6 or above.
+For using the precompiled application you only need a Java Runtime Environment (JRE) version 8 or above.
 
 #### Building the latest from source
 
